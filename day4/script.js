@@ -16,7 +16,7 @@ function task1(){
 }
 function task2(){
     return new Promise(resolve =>{
-        setTimeout(() => resolve("Task 2 done"), 1000);
+        setTimeout(() => resolve("Task 2 done"), 2000);
     })
 }
 
@@ -25,3 +25,23 @@ async function runTasks(){
     console.log(results);
 }
 runTasks();
+
+
+const taskInput = document.getElementById('taskInput');
+const addButton = document.getElementById('addButton');
+const taskList = document.getElementById('taskList');
+
+addButton.addEventListener('click', function() {
+    const taskText = taskInput.value.trim();
+
+    if (taskText !== '') {
+        
+        const taskElement = document.createElement('p');
+
+        taskElement.textContent = taskText;
+
+        taskList.appendChild(taskElement);
+
+        taskInput.value = '';
+    }
+});
