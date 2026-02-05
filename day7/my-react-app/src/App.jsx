@@ -1,14 +1,16 @@
 import './App.css'
 
+function Header() {
+ return <h2> This is outside function</h2>
+}
+
 function App() {
-  const name ="Pranjal";
   return (
-    <>
-    <h1> Hello Everyone</h1>
-    <div className ="box"></div>
-    onClick={handleClick}
-    <h2>Hello {name}</h2>
-    </>
+    <div>
+      <Header/>
+      <p> this is inside the function?</p>
+    </div>
   )
 }
+
 export default App
