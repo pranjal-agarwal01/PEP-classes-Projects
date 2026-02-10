@@ -73,17 +73,47 @@
 // }
 // export default App
 
-function Greeting(props) {
-  return <h1>Hello, {props.name}!</h1>;
+// function Greeting(props) {
+//   return <h1>Hello, {props.name}!</h1>;
+// }
+
+// function App() {
+//   return (
+//     <div>
+//       <Greeting name="Rashmi" />
+//       <Greeting name="Sarah" />
+//     </div>
+//   );
+// }
+import { useState ,useRef} from 'react';
+function State(){
+  const [count,setCount] = useState(0);
+  const renderCount = useRef(0);
+
+ renderCount.current++;
+
+  function increase(){
+    setCount(count+1);
+  }
+  function decrease(){
+    setCount(count-1);
+  }
+  return (
+    <>
+    <h1>{count}</h1>
+    <button onClick={increase}>+</button>
+    <button onClick={decrease}>-</button>
+    <p>Render Count : {renderCount.current}</p>
+    </>
+  )
 }
 
-function App() {
+function App(){
   return (
-    <div>
-      <Greeting name="Rashmi" />
-      <Greeting name="Sarah" />
-    </div>
-  );
+    <>
+    <State/>
+    </>
+  )
 }
 
 export default App;
