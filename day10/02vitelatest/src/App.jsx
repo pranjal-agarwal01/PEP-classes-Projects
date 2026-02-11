@@ -1,8 +1,10 @@
 import React, { useState, useRef } from 'react';
 import Header from './header';
 import './App.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-// Product Card - Simple!
+
+
 const ProductCard = ({ product, addToCart, removeFromCart, getCartCount }) => {
   const count = getCartCount(product.id);
 
@@ -28,6 +30,15 @@ const ProductCard = ({ product, addToCart, removeFromCart, getCartCount }) => {
 };
 
 function App() {
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<h1>Home Page</h1>}  />
+      <Route path="/about" element={<h1>About  Page</h1>} />
+      <Route path="/contact" element={<h1>Contact Page</h1>} />
+      <Route path ='/Login' element={<h1>Login Page</h1>} />
+
+    </Routes>
+  </BrowserRouter>
   const [cart, setCart] = useState({});
   const scrollRef = useRef(null);
 
@@ -109,4 +120,7 @@ function App() {
   );
 }
 
+ 
+
+ 
 export default App;

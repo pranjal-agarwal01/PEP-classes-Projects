@@ -43,10 +43,10 @@ const Header = () => {
             MyShop
           </div>
           <nav className="nav">
-            <Home />
-            <About />
-            <ContactUs />
-            <Login />
+            <Link to ="/home"><Home /></Link>
+            <Link to ="/about"><About /></Link>
+            <Link to ="/contact"><ContactUs /></Link>
+            <Link to ="/login"><Login /></Link>
           </nav>
         </div>
       </div>
