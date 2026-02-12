@@ -1,8 +1,12 @@
-import React, { useState, useRef } from 'react';
-import Header from './header';
+import React, { useState, useRef, lazy, Suspense } from 'react';
+import Header from './Header';
 import './App.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';  
+//import About from './About';
+//import Contact from './Contact';
 
+const About = lazy(() => import("./About"));
+const Contact = lazy(() => import("./Contact"));
 
 
 const ProductCard = ({ product, addToCart, removeFromCart, getCartCount }) => {
@@ -13,11 +17,9 @@ const ProductCard = ({ product, addToCart, removeFromCart, getCartCount }) => {
       <img src={product.image} alt={product.name} />
       <h3>{product.name}</h3>
       <p className="price">Rs.{product.price}</p>
-      
+
       {count === 0 ? (
-        <button onClick={() => addToCart(product.id)}>
-          Add to Cart
-        </button>
+        <button onClick={() => addToCart(product.id)}>Add to Cart</button>
       ) : (
         <div className="quantity">
           <button onClick={() => removeFromCart(product.id)}>-</button>
@@ -30,15 +32,6 @@ const ProductCard = ({ product, addToCart, removeFromCart, getCartCount }) => {
 };
 
 function App() {
-  <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<h1>Home Page</h1>}  />
-      <Route path="/about" element={<h1>About  Page</h1>} />
-      <Route path="/contact" element={<h1>Contact Page</h1>} />
-      <Route path ='/Login' element={<h1>Login Page</h1>} />
-
-    </Routes>
-  </BrowserRouter>
   const [cart, setCart] = useState({});
   const scrollRef = useRef(null);
 
@@ -84,34 +77,42 @@ function App() {
   return (
     <div className="app">
       <Header />
-      
-      <main>
-        <h1>Welcome to MyShop</h1>
-        
-        {totalItems > 0 && (
-          <div className="cart-info">
-            Cart: {totalItems} item - Total: Rs.{totalPrice}
-          </div>
-        )}
+      <Routes>
+        <Route path="/" element={
+          <main>
+            <h1>Welcome to MyShop</h1>
 
-        <div className="products-container">
-          <button className="arrow" onClick={() => scroll(-1)}>‹</button>
-          
-          <div className="products" ref={scrollRef}>
-            {products.map(product => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                addToCart={addToCart}
-                removeFromCart={removeFromCart}
-                getCartCount={getCartCount}
-              />
-            ))}
-          </div>
+            {totalItems > 0 && (
+              <div className="cart-info">
+                Cart: {totalItems} item - Total: Rs.{totalPrice}
+              </div>
+            )}
 
-          <button className="arrow" onClick={() => scroll(1)}>›</button>
-        </div>
-      </main>
+            <div className="products-container">
+              <button className="arrow" onClick={() => scroll(-1)}>‹</button>
+
+              <div className="products" ref={scrollRef}>
+                {products.map(product => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    addToCart={addToCart}
+                    removeFromCart={removeFromCart}
+                    getCartCount={getCartCount}
+                  />
+                ))}
+              </div>
+
+              <button className="arrow" onClick={() => scroll(1)}>›</button>
+            </div>
+          </main>
+        } />
+        <Route path="/about" element={<Suspense fallback={<h1>Loading...</h1>}>
+        <About />
+        </Suspense>} />
+        <Route path="/contact" element={<Suspense fallback ={<h1>Loading...</h1>}><Contact /></Suspense>} />
+        <Route path="/login" element={<h1>Login Page</h1>} />
+      </Routes>
 
       <footer>
         <p>&copy; 2026 MyShop. All rights reserved.</p>
@@ -120,7 +121,4 @@ function App() {
   );
 }
 
- 
-
- 
 export default App;
