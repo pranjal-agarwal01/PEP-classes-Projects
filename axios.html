@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Minimal CRUD App</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.5/axios.min.js"></script>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
+    input, textarea { display: block; width: 100%; margin: 6px 0 12px; padding: 8px; box-sizing: border-box; }
+    button { margin-right: 8px; padding: 6px 14px; cursor: pointer; }
+    li { border: 1px solid #ddd; padding: 10px; margin: 8px 0; list-style: none; border-radius: 4px; }
+    .actions { margin-top: 8px; }
+    .msg { color: green; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+const API = 'https://jsonplaceholder.typicode.com/posts';
+
+function App() {
+  const [posts, setPosts]   = useState([]);
+  const [title, setTitle]   = useState('');
+  const [body, setBody]     = useState('');
+  const [editId, setEditId] = useState(null);
+  const [msg, setMsg]       = useState('');
+
+  useEffect(() => {
+    axios.get(API + '?_limit=5')
+      .then(res => setPosts(res.data));
+  }, []);
+
+  function notify(text) {
+    setMsg(text);
+    setTimeout(() => setMsg(''), 2000);
+  }
+
+  function handleCreate() {
+    axios.post(API, { title, body, userId: 1 })
+      .then(res => {
+        setPosts([{ ...res.data, id: Date.now() }, ...posts]);
+        setTitle(''); setBody('');
+        notify('Post created!');
+      });
+  }
+
+  function handleUpdate() {
+    axios.put(`${API}/${editId}`, { title, body, userId: 1 })
+      .then(() => {
+        setPosts(posts.map(p => p.id === editId ? { ...p, title, body } : p));
+        setEditId(null); setTitle(''); setBody('');
+        notify('Post updated!');
+      });
+  }
+
+  function handleDelete(id) {
+    axios.delete(`${API}/${id}`)
+      .then(() => {
+        setPosts(posts.filter(p => p.id !== id));
+        notify('Post deleted!');
+      });
+  }
+
+  function startEdit(post) {
+    setEditId(post.id);
+    setTitle(post.title);
+    setBody(post.body);
+  }
+
+  return (
+    <div>
+      <h2>CRUD App — React + Axios</h2>
+
+      {/* FORM */}
+      <input  value={title} onChange={e => setTitle(e.target.value)} placeholder="Title" />
+      <textarea value={body}  onChange={e => setBody(e.target.value)}  placeholder="Body" />
+      {editId
+        ? <button onClick={handleUpdate}>Update</button>
+        : <button onClick={handleCreate}>Create</button>
+      }
+      {editId && <button onClick={() => { setEditId(null); setTitle(''); setBody(''); }}>Cancel</button>}
+
+      {msg && <p className="msg">{msg}</p>}
+
+      <ul>
+        {posts.map(post => (
+          <li key={post.id}>
+            <strong>{post.title}</strong>
+            <p>{post.body}</p>
+            <div className="actions">
+              <button onClick={() => startEdit(post)}>Edit</button>
+              <button onClick={() => handleDelete(post.id)}>Delete</button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
